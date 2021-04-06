@@ -1,0 +1,107 @@
+﻿<div id="error">
+
+</div>
+
+
+<div style="float:right">
+    <input type="button" value="SAVE" onclick="save()">
+    <input type="button" value="PREVIUE" onclick="previue()">
+    <input type="button" value="SEND" onclick="send()">
+</div>
+<br />
+<br />
+<div style="float:left"><b>Email address<b />
+    </div>
+<div style="float:right">
+    <b>Rss Url<b />
+</div>
+<br />
+<div style="width: 100%; display: flex;">
+    <div style="width: 45%; margin-left: 0px; margin-right: auto; padding-right: 16px;">
+        <input id="emailInput" placeholder="example@email.com" type="email" style="width: 100%;" />
+        <br /><br />
+        <iframe id="mailContainer" style="width: 100%;"></iframe>
+    </div>
+    <div style="width: 45%; margin-left: auto; margin-right: 0px; padding-left: 16px;">
+        <div style="width: 100%; display: flex;">
+            <input id="rssInput" placeholder="https://example.site/rss.xml" type="url" style="margin-right: 0px;width: 100%;" />
+            <button style="margin-left: auto; margin-right: 0px; width: fit-content;"  onclick="add()">ADD</button>
+        </div>
+        <br /><br />
+        <table id="listLinks" style="width: 100%;"> 
+            <tr><td>rss</td></tr>
+            <tr><td>rss</td></tr>
+            <tr><td>rss</td></tr>
+        </table>
+    </div>
+</div>
+<script>
+    var base = "http://localhost:5000/api";
+    var links = [];
+        function save()
+    {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function ()
+        {
+            if (this.readyState == 4 && (this.status == 400 || this.status == 500))
+            {
+                document.getElementById("error").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("POST", base+"/database/save", true);
+        xhttp.send();
+
+    }
+    function previue()
+    {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function ()
+        {
+            if (this.readyState == 4 && (this.status == 400 || this.status == 500))
+            {
+                document.getElementById("error").innerHTML = this.responseText;
+            }
+        };
+        var email = document.getElementById("emailInput").value;
+        xhttp.open("GET", base+"/rss/preview?addresEmail="+email, true);
+        xhttp.send();
+    }
+    function send()
+    {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function ()
+        {
+            if (this.readyState == 4 && (this.status == 400 || this.status == 500))
+            {
+                document.getElementById("error").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("POST", base+"/rss/send", true);
+        xhttp.send();
+    }
+    function add()
+    {
+        var rssText = document.getElementById("rssInput").value;
+        if (rssText === "")
+        {
+            document.getElementById("error").innerHTML = "Uzupełnij wpis";
+            return;
+        }
+        links.push(rssText);
+
+        const table = document.getElementById("listLinks");
+        table.innerHTML = "";
+        var i;
+        for (i = 0; i < links.length; i++)
+        {
+            let row = table.insertRow();
+            let cell = row.insertCell(0);
+            cell.innerHTML = links[i];
+        }
+    }
+
+
+
+
+
+</script>
